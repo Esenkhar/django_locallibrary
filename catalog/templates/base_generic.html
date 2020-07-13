@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{% block title %}{% endblock %} | Local Library</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="shortcut icon" href="/static/favicon.ico" type="image/x-icon">
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-3 col-md-2 col-lg-2">
+            {% block sidebar %}
+                <ul class="sidebar-nav">
+                    <li><a href="{% url 'index' %}">Home</a></li>
+                    <li><a href="{% url 'books' %}">All books</a></li>
+                    <li><a href="{% url 'authors' %}">All authors</a></li>
+                    <li><a href="{% url 'my-form' %}">My Form</a> </li>
+                    {% if user.is_authenticated %}
+                        <li><a href="{% url 'my-borrowed' %}">My borrowed</a></li>
+                    {% endif %}
+                    {% if user.is_authenticated and perms.catalog.staff_member_required %}
+                        <hr/>
+                        <li><a href="{% url 'all-borrowed' %}">All borrowed</a></li>
+                        <hr/>
+                        <li><a href="{% url 'book-create' %}">Create book</a> </li>
+                        <li><a href="{% url 'author-create' %}">Create author</a> </li>
+                    {% endif %}
+                    <br/>
+                </ul>
+            {% endblock %}
+        </div>
+        <div class="col-sm-6 col-md-8 col-lg-8">
+            {% block content %}{% endblock %}
+            {% block pagination %}
+                {% if is_paginated %}
+                    <div class="pagination">
+                            <span class="page-links">
+                                {% for page_number in page_obj.paginator.page_range %}
+                                    {% if page_obj.number != page_number %}
+                                        <a href="{{ page_number }}">{{ page_number }}</a>
+                                    {% else %}
+                                        <span class="page-current"><a
+                                                href="{{ page_number }}">{{ page_number }}</a></span>
+                                    {% endif %}
+                                {% endfor %}
+                            </span>
+                    </div>
+                {% endif %}
+            {% endblock %}
+        </div>
+        <div class="col-sm-3 col-md-2 col-lg-2">
+            {% if user.is_authenticated %}
+                <p>User: {{ user.get_username }}<br/>
+                    {% if user.is_superuser %}
+                        <a href="/admin/">Admin panel</a> <br/>
+                    {% endif %}
+                    <a href="{% url 'logout' %}?next={{ request.get_full_path }}">Logout</a></p>
+            {% else %}
+                <p><a href="{% url 'login' %}?next={{ request.get_full_path }}">Login</a></p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function () {
+        $('.login-btn').hover(
+            function () {
+                $(this).removeClass('btn-secondary')
+                $(this).addClass('btn-primary');
+            },
+            function () {
+                $(this).removeClass('btn-primary')
+                $(this).addClass('btn-secondary');
+            }
+        )
+    })
+</script>
+</body>
+</html>

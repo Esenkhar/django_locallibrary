@@ -1,0 +1,30 @@
+{% extends "base_generic.html" %}
+
+{% block title %}
+    Book List
+    {% if is_paginated %}
+        (page {{ page_obj.number }})
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <h1>Book List</h1>
+    {% if book_list %}
+    <ul style="height: 300px">
+        {% for book in book_list %}
+            {% if forloop.first %}
+                <h2>Book's title (authors)</h2>
+            {% endif %}
+            <li>
+                <a href="{%  url 'book-detail' book.pk %}">{{ book.title }}</a> ({{ book.author }})
+                {% if user.is_authenticated and perms.catalog.staff_member_required %}
+                    <a href="{% url 'book-update' book.pk %}"  style="color: limegreen">  Edit |</a>
+                    <a href="{% url 'book-delete' book.pk %}"  style="color: darkred"> Delete</a>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+        <p>There are no books in the library</p>
+    {% endif %}
+{% endblock %}

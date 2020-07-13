@@ -1,0 +1,30 @@
+{% extends "base_generic.html" %}
+
+{% block title %}
+    Author List
+    {% if is_paginated %}
+        (page {{ page_obj.number }})
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <h1>Author List</h1>
+    {% if author_list %}
+        <ul style="height: 300px">
+            {% for author in author_list %}
+                {% if forloop.first %}
+                    <h2>Authors</h2>
+                {% endif %}
+                <li>
+                    <a href="{% url 'author-detail' author.id %}">{{ author.last_name }} {{ author.first_name }}</a>
+                    {% if user.is_authenticated and perms.catalog.staff_member_required %}
+                         - <a href="{% url 'author-update' author.id %}" style="color: limegreen"> [Edit |</a>
+                        <a href="{% url 'author-delete' author.id %}" style="color: darkred">Delete]</a>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>There are no authors in the library</p>
+    {% endif %}
+{% endblock %}
