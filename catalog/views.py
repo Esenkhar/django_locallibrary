@@ -47,7 +47,7 @@ class MainPage(generic.TemplateView):
 #     )
 
 
-class BookListView(LoginRequiredMixin, generic.ListView):
+class BookListView(generic.ListView):
     model = Book
     paginate_by = 5
     context_object_name = 'book_list'
