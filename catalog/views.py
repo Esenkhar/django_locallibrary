@@ -125,6 +125,7 @@ class RenewBookLibrarian(PermissionRequiredMixin, UpdateView):
         return super(RenewBookLibrarian, self).dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
+        form.save()
         return HttpResponseRedirect(reverse('all-borrowed'))
 
     # def dispatch(self, request, *args, **kwargs):
